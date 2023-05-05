@@ -9,7 +9,7 @@ function hideloader() {
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-async function getPokemonApiData(url){
+async function fetchAPI(url){
     const response = await fetch(url)
     var data = await response.json();
     
@@ -17,12 +17,12 @@ async function getPokemonApiData(url){
         hideloader();
     }
 
-    console.log(data);
+    // console.log(data);
     return data;
 }
 
 async function getRandomCorrectPokemon(){
-    const data = await getPokemonApiData(API_URL);
+    const data = await fetchAPI(API_URL);
     const randomIndex = Math.floor(Math.random() * data.results.length);
     const correctPokemon = data.results[randomIndex].name;
 
@@ -31,7 +31,7 @@ async function getRandomCorrectPokemon(){
 }
 
 async function getRandomWrongPokemon(excludePokemonName) {
-    const data = await getPokemonApiData(API_URL);
+    const data = await fetchAPI(API_URL);
     
     const pokemonNames = data.results.map(result => result.name);
     
@@ -61,7 +61,7 @@ async function displayPokemonButtons(correctPokemon, otherPokemon) {
     const shuffledPokemon = shuffleArray(allPokemon);
 
     // API-URL für das korrekte Pokemon abrufen
-    const correctPokemonData = await getPokemonApiData(`${API_URL}/${correctPokemon}`);
+    const correctPokemonData = await fetchAPI(`${API_URL}/${correctPokemon}`);
     const correctPokemonImageUrl = correctPokemonData.sprites.front_default;
     
     // Bild des korrekten Pokemon anzeigen
@@ -132,14 +132,14 @@ function capitalizeFirstLetter(string) {
 }
   
 async function main() {
-    const scoreContainer = document.getElementById('score-container');
-    scoreContainer.innerText = `Score: ${playerScore}`;
-
     const correctPokemon = await getRandomCorrectPokemon();
     const otherPokemon = await getRandomWrongPokemon(correctPokemon);
+    const scoreContainer = document.getElementById('score-container');
+    scoreContainer.innerText = `Score: ${playerScore}`;
     await displayPokemonButtons(correctPokemon, otherPokemon);
-    console.log(correctPokemon, otherPokemon);
-    console.log(playerScore);
+    
+    // console.log(correctPokemon, otherPokemon);
+    // console.log(playerScore);
 }
 
 main();
